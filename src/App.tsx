@@ -5,29 +5,35 @@ import { generateClient } from "aws-amplify/data";
 const client = generateClient<Schema>();
 
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [datasets, setDatasets] = useState<Array<Schema["Dataset"]["type"]>>(
+    []
+  );
 
   useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
+    client.models.Dataset.observeQuery().subscribe({
+      next: (data) => setDatasets([...data.items]),
     });
   }, []);
 
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
+  async function createDataset() {
+    client.models.Dataset.create({
+      id: "123",
+      name: window.prompt("Dataset content") || "test",
+      createdBy: (await client.models.User.get({ id: "123" })).data!,
+    });
   }
 
   return (
     <main>
       <h1>Samurai Data</h1>
-      <button onClick={createTodo}>+ new</button>
+      <button onClick={createDataset}>+ new</button>
       <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
+        {datasets.map((dataset) => (
+          <li key={dataset.id}>{dataset.name}</li>
         ))}
       </ul>
       <div>
-        🥳 App successfully hosted. Try creating a new todo.
+        🥳 App successfully hosted. Try creating a new dataset.
         <br />
         <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
           Review next step of this tutorial.
