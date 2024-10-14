@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart3, Database, FileText, Users, Home, Settings, HelpCircle, LogOut } from "lucide-react"
-import Link from "next/link"
+// import Link from "next/link"
 
 export function DashboardHomeComponent() {
   return (
@@ -17,36 +17,36 @@ export function DashboardHomeComponent() {
           <span className="font-bold text-lg">CMS Dashboard</span>
         </div>
         <nav className="space-y-2 flex-1">
-          <Link href="/dashboard" className="flex items-center space-x-2 p-2 bg-gray-200 rounded">
+          <a href="/dashboard" className="flex items-center space-x-2 p-2 bg-gray-200 rounded">
             <Home className="h-5 w-5" />
             <span>Home</span>
-          </Link>
-          <Link href="/datasets" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
+          </a>
+          <a href="/datasets" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
             <Database className="h-5 w-5" />
             <span>Datasets</span>
-          </Link>
-          <Link href="/annotations" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
+          </a>
+          <a href="/annotations" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
             <FileText className="h-5 w-5" />
             <span>Annotations</span>
-          </Link>
-          <Link href="/users" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
+          </a>
+          <a href="/users" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
             <Users className="h-5 w-5" />
             <span>Users</span>
-          </Link>
-          <Link href="/analytics" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
+          </a>
+          <a href="/analytics" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
             <BarChart3 className="h-5 w-5" />
             <span>Analytics</span>
-          </Link>
+          </a>
         </nav>
         <div className="space-y-2">
-          <Link href="/settings" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
+          <a href="/settings" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
             <Settings className="h-5 w-5" />
             <span>Settings</span>
-          </Link>
-          <Link href="/help" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
+          </a>
+          <a href="/help" className="flex items-center space-x-2 p-2 hover:bg-gray-200 rounded">
             <HelpCircle className="h-5 w-5" />
             <span>Help</span>
-          </Link>
+          </a>
           <Button variant="ghost" className="w-full justify-start" onClick={() => console.log("Logout clicked")}>
             <LogOut className="h-5 w-5 mr-2" />
             Logout
@@ -141,16 +141,16 @@ export function DashboardHomeComponent() {
                 </CardHeader>
                 <CardContent className="grid gap-4">
                   <Button className="w-full" asChild>
-                    <Link href="/datasets/new">Create New Dataset</Link>
+                    <a href="/datasets/new">Create New Dataset</a>
                   </Button>
                   <Button className="w-full" variant="outline" asChild>
-                    <Link href="/annotations">Start Annotating</Link>
+                    <a href="/annotations">Start Annotating</a>
                   </Button>
                   <Button className="w-full" variant="outline" asChild>
-                    <Link href="/api-docs">View API Documentation</Link>
+                    <a href="/api-docs">View API Documentation</a>
                   </Button>
                   <Button className="w-full" variant="outline" asChild>
-                    <Link href="/huggingface">Sync with HuggingFace</Link>
+                    <a href="/huggingface">Sync with HuggingFace</a>
                   </Button>
                 </CardContent>
               </Card>

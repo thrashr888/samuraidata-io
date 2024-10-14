@@ -45,7 +45,7 @@ const schema = a.schema({
     format: a.string(),
     modalities: a.string().array(),
     entries: a.hasMany('DataEntry', 'datasetId')
-  }),
+  }).authorization(allow => [allow.owner()]),
 
   DataEntry: a.model({
     entryId: a.id().required(),
@@ -59,7 +59,7 @@ const schema = a.schema({
     version: a.string(),
     tags: a.string().array(),
     annotations: a.hasMany('Annotation', 'entryId')
-  }),
+  }).authorization(allow => [allow.owner()]),
 
   Annotation: a.model({
     annotationId: a.id().required(),
@@ -70,7 +70,7 @@ const schema = a.schema({
     createdById: a.id().required(),
     createdBy: a.belongsTo('User', 'createdById'),
     createdAt: a.datetime().required()
-  })
+  }).authorization(allow => [allow.owner()])
 }).authorization((allow) => allow.publicApiKey());
 
 export type Schema = ClientSchema<typeof schema>;
@@ -78,7 +78,7 @@ export type Schema = ClientSchema<typeof schema>;
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: "apiKey",
+    defaultAuthorizationMode: "userPool",
     // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
