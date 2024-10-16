@@ -2,31 +2,36 @@ import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
   Organization: a.model({
-    organizationId: a.id().required(),
     name: a.string().required(),
     email: a.email(),
     createdAt: a.datetime().required(),
     updatedAt: a.datetime(),
     members: a.hasMany('User', 'organizationId'),
     datasets: a.hasMany('Dataset', 'organizationId'),
-  }),
+    groups: a.string().array(),
+  })
+  .authorization(allow => [
+    allow.owner(),
+    allow.groupsDefinedIn('groups')
+  ]),
 
   User: a.model({
-    userId: a.id().required(),
+    cognitoId: a.string().required(),
     organizationId: a.id(),
     organization: a.belongsTo('Organization', 'organizationId'),
     username: a.string().required(),
     email: a.email().required(),
     passwordHash: a.string().required(),
     lastLoginAt: a.datetime(),
-    role: a.string(),
     createdAt: a.datetime().required(),
     datasets: a.hasMany('Dataset', 'createdById'),
     annotations: a.hasMany('Annotation', 'createdById')
-  }),
+  }).authorization(allow => [
+    allow.owner(),
+    allow.groupsDefinedIn('organization.groups').to(['read']),
+  ]),
 
   Dataset: a.model({
-    id: a.id().required(),
     organizationId: a.id(),
     organization: a.belongsTo('Organization', 'organizationId'),
     createdById: a.id().required(),
@@ -45,10 +50,12 @@ const schema = a.schema({
     format: a.string(),
     modalities: a.string().array(),
     entries: a.hasMany('DataEntry', 'datasetId')
-  }).authorization(allow => [allow.owner()]),
+  }).authorization(allow => [
+    allow.owner(),
+    allow.groupsDefinedIn('organization.groups'),
+  ]),
 
   DataEntry: a.model({
-    entryId: a.id().required(),
     datasetId: a.id().required(),
     dataset: a.belongsTo('Dataset', 'datasetId'),
     content: a.string().required(),
@@ -59,10 +66,12 @@ const schema = a.schema({
     version: a.string(),
     tags: a.string().array(),
     annotations: a.hasMany('Annotation', 'entryId')
-  }).authorization(allow => [allow.owner()]),
+  }).authorization(allow => [
+    allow.owner(),
+    allow.groupsDefinedIn('dataset.organization.groups'),
+  ]),
 
   Annotation: a.model({
-    annotationId: a.id().required(),
     entryId: a.id().required(),
     entry: a.belongsTo('DataEntry', 'entryId'),
     type: a.string().required(),
@@ -70,8 +79,11 @@ const schema = a.schema({
     createdById: a.id().required(),
     createdBy: a.belongsTo('User', 'createdById'),
     createdAt: a.datetime().required()
-  }).authorization(allow => [allow.owner()])
-}).authorization((allow) => allow.publicApiKey());
+  }).authorization(allow => [
+    allow.owner(),
+    allow.groupsDefinedIn('entry.dataset.organization.groups'),
+  ])
+});
 
 export type Schema = ClientSchema<typeof schema>;
 
@@ -79,7 +91,6 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: "userPool",
-    // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
     },

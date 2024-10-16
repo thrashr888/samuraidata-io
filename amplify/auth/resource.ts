@@ -8,4 +8,16 @@ export const auth = defineAuth({
   loginWith: {
     email: true,
   },
+  userAttributes: {
+    email: {
+      required: true,
+    },
+    "custom:organizationId": {
+      dataType: "String",
+      mutable: true,
+      maxLen: 32,
+      minLen: 1,
+    },
+  },
+  groups: ["ADMINS", "EDITORS", "VIEWERS"],
 });
